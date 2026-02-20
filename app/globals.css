@@ -1,26 +1,164 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-glass: var(--glass);
+  --color-glass-border: var(--glass-border);
+  --color-glass-hover: var(--glass-hover);
+  --color-accent: var(--accent);
+  --color-accent-mobile: var(--accent-mobile);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-inter), "SF Pro Display", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "SF Pro Display", var(--font-inter), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #f5f5f7;
+  --foreground: #1d1d1f;
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.45);
+  --glass-hover: rgba(255, 255, 255, 0.7);
+  --accent: #0071e3;
+  --accent-mobile: #7c3aed;
+  --muted: #6e6e73;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  --glass-blur: blur(40px);
+  --glass-specular: rgba(255, 255, 255, 0.7);
+  --liquid-glow: rgba(0, 113, 227, 0.06);
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #f5f5f7;
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-hover: rgba(255, 255, 255, 0.1);
+  --accent: #2997ff;
+  --accent-mobile: #a78bfa;
+  --muted: #86868b;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+  --glass-specular: rgba(255, 255, 255, 0.15);
+  --liquid-glow: rgba(41, 151, 255, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ─── Liquid glass card ─────────────────────────────────────────── */
+
+.liquid-glass {
+  background: var(--glass);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    var(--glass-shadow),
+    inset 0 1px 0 0 var(--glass-specular);
+  border-radius: 1.25rem;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.liquid-glass:hover {
+  border-color: var(--glass-hover);
+  box-shadow:
+    var(--glass-shadow),
+    inset 0 1px 0 0 var(--glass-specular),
+    0 0 60px -12px var(--liquid-glow);
+}
+
+/* shimmer highlight on glass cards */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--glass-specular) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+}
+
+.liquid-glass:hover::before {
+  opacity: 0.8;
+}
+
+/* thinner variant for inline elements */
+.liquid-glass-thin {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 0 var(--glass-specular);
+  transition: all 0.3s ease;
+}
+
+.liquid-glass-thin:hover {
+  background: var(--glass-hover);
+  border-color: var(--glass-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@supports not (backdrop-filter: blur(24px)) {
+  .glass-fallback,
+  .liquid-glass {
+    background: var(--glass) !important;
+    opacity: 0.95;
+  }
 }

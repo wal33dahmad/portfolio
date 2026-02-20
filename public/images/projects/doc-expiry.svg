@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1e2e"/>
+      <stop offset="100%" stop-color="#2d2b55"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#a78bfa" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+  <rect width="390" height="844" fill="url(#bg)"/>
+  <text x="30" y="80" font-family="sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">Documents</text>
+  <text x="30" y="108" font-family="sans-serif" font-size="13" fill="#a78bfa">2 expiring soon</text>
+  <rect x="20" y="135" width="350" height="90" rx="16" fill="url(#card)"/>
+  <text x="40" y="168" font-family="sans-serif" font-size="15" fill="#e2e8f0">Passport</text>
+  <text x="40" y="195" font-family="sans-serif" font-size="12" fill="#a78bfa">Expires: Mar 15, 2026</text>
+  <circle cx="340" cy="175" r="8" fill="#f87171"/>
+  <rect x="20" y="245" width="350" height="90" rx="16" fill="url(#card)"/>
+  <text x="40" y="278" font-family="sans-serif" font-size="15" fill="#e2e8f0">Driver's License</text>
+  <text x="40" y="305" font-family="sans-serif" font-size="12" fill="#a78bfa">Expires: Jun 20, 2026</text>
+  <circle cx="340" cy="285" r="8" fill="#fbbf24"/>
+  <rect x="20" y="355" width="350" height="90" rx="16" fill="url(#card)"/>
+  <text x="40" y="388" font-family="sans-serif" font-size="15" fill="#e2e8f0">Insurance Card</text>
+  <text x="40" y="415" font-family="sans-serif" font-size="12" fill="#94a3b8">Expires: Dec 01, 2027</text>
+  <circle cx="340" cy="395" r="8" fill="#34d399"/>
+  <rect x="20" y="465" width="350" height="90" rx="16" fill="url(#card)"/>
+  <text x="40" y="498" font-family="sans-serif" font-size="15" fill="#e2e8f0">Visa</text>
+  <text x="40" y="525" font-family="sans-serif" font-size="12" fill="#94a3b8">Expires: Sep 10, 2027</text>
+  <circle cx="340" cy="505" r="8" fill="#34d399"/>
+  <circle cx="195" cy="780" r="28" fill="#a78bfa" opacity="0.8"/>
+  <text x="189" y="787" font-family="sans-serif" font-size="24" fill="#ffffff">+</text>
+</svg>
