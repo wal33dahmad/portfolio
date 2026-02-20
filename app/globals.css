@@ -48,6 +48,15 @@
 
 * {
   box-sizing: border-box;
+  cursor: default;
+}
+
+button,
+a,
+[role="button"],
+[type="submit"],
+.cursor-pointer {
+  cursor: pointer;
 }
 
 html {

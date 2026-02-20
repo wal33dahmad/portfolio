@@ -162,7 +162,7 @@ export default function Hero() {
           className="mt-20"
         >
           <a
-            href="#skills"
+            href="#experience"
             className="flex flex-col items-center gap-2 text-muted transition-colors hover:text-foreground"
           >
             <span className="text-xs uppercase tracking-widest">Scroll</span>
