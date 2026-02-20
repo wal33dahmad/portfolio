@@ -27,7 +27,7 @@ export default function Skills() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-60px" }}
-        className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 lg:grid-cols-2"
+        className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 md:grid-cols-2"
       >
         {skillDomains.map((domain) => {
           const Icon = domainIcons[domain.icon] ?? Globe;
