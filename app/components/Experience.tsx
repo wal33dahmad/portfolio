@@ -11,7 +11,7 @@ export default function Experience() {
   return (
     <section
       id="experience"
-      className="relative flex min-h-[70vh] flex-col items-center justify-center px-6 py-32"
+      className="relative flex flex-col items-center justify-center px-6 py-20"
     >
       <SectionTitle
         title="Experience"

@@ -30,7 +30,7 @@ export default function Footer() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      className="relative mt-32"
+      className="relative mt-10"
     >
       <div className="mx-auto max-w-6xl px-6">
         <div className="h-px w-full bg-linear-to-r from-transparent via-glass-border to-transparent" />

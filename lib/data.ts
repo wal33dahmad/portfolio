@@ -2,8 +2,7 @@ export const personalInfo = {
   name: "Waleed Ahmed",
   title: "Full-Stack Web & Mobile Developer",
   tagline:
-    "I design and build web platforms and mobile apps — from pixel to production.",
-  bio: "I build web platforms and mobile apps that people actually use — from Telegram apps with 150K+ users to IoT dashboards and published App Store products. I've spent 4+ years working remotely with teams across France, Turkey, and Pakistan, and I'm happiest when I'm shipping something real. If you have an idea, a product, or a problem — let's talk.",
+    "Not just code — complete digital products, built end-to-end.",
   email: "rana.waleed123@gmail.com",
   phone: "+966-501963998",
   github: "https://github.com/wal33dahmad",
@@ -108,16 +107,16 @@ export const projects: Project[] = [
   },
   {
     id: "patron-manager",
-    title: "Patron Manager",
+    title: "Patron",
     description:
-      "React Native (Expo) app for IoT monitoring with real-time data and notifications.",
+      "Mobile app for security guards and patrons to view assigned shifts, complete rounds, and scan checkpoints in real time.",
     tags: ["React Native", "Expo", "IoT", "Real-time"],
     type: "mobile",
     screenshots: [
       {
         src: "/images/projects/Patron.png",
         device: "pixel",
-        alt: "Patron Manager IoT monitoring app",
+        alt: "Patron shift management app",
       },
     ],
   },
@@ -139,8 +138,8 @@ export const projects: Project[] = [
   {
     id: "carhub",
     title: "Carhub",
-    description: "Landing page for car rental and vehicle showcase with a modern, responsive layout.",
-    tags: ["Next.js", "Tailwind CSS", "Landing Page"],
+    description: "Car rental platform to browse, compare, and book vehicles with a modern, responsive interface.",
+    tags: ["Next.js", "Tailwind CSS", "Full-Stack"],
     type: "web",
     screenshots: [
       {
@@ -153,8 +152,8 @@ export const projects: Project[] = [
   {
     id: "easybank",
     title: "Easybank",
-    description: "Banking landing page with clean UI and smooth sections for features and testimonials.",
-    tags: ["React", "Tailwind CSS", "Landing Page"],
+    description: "Digital banking platform with a clean UI for managing accounts, features overview, and customer onboarding.",
+    tags: ["React", "Tailwind CSS", "Frontend"],
     type: "web",
     screenshots: [
       {

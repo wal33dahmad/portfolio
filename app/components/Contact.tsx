@@ -7,6 +7,7 @@ import SectionTitle from "./SectionTitle";
 import GlassContainer from "./GlassContainer";
 import Button from "./Button";
 import { Mail, Github, Linkedin, Send, Phone } from "lucide-react";
+import Magnet from "@/app/components/Magnet";
 
 const contactLinks = [
   {
@@ -39,7 +40,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative flex min-h-[70vh] flex-col items-center justify-center px-6 py-32"
+      className="relative flex flex-col items-center justify-center px-6 py-20"
     >
       <SectionTitle
         title="Let's Work Together"
@@ -55,7 +56,11 @@ export default function Contact() {
       >
         <GlassContainer className="p-8 sm:p-10">
           <p className="mb-8 text-center text-sm leading-relaxed text-muted sm:text-base">
-            {personalInfo.bio}
+            I build web platforms and mobile apps that people actually use — from Telegram apps with{" "}
+            <span className="font-medium text-accent">150K+ users</span> to IoT dashboards and published{" "}
+            <span className="font-medium text-accent-mobile">App Store products</span>. I&apos;ve spent{" "}
+            <span className="font-medium text-foreground">4+ years</span> working remotely with teams across{" "}
+            <span className="font-medium text-foreground">France, Turkey, Saudi Arabia and Pakistan</span>, and I&apos;m happiest when I&apos;m shipping something real. If you have an idea, a product, or a problem — let&apos;s talk.
           </p>
 
           <div className="mb-8 flex flex-col gap-4">
@@ -75,23 +80,23 @@ export default function Contact() {
                   <p className="text-xs font-medium uppercase tracking-wider text-muted">
                     {label}
                   </p>
-                  <p className="text-sm font-medium text-foreground">
-                    {value}
-                  </p>
+                  <p className="text-sm font-medium text-foreground">{value}</p>
                 </div>
               </a>
             ))}
           </div>
 
           <div className="flex justify-center">
-            <Button
-              href={`mailto:${personalInfo.email}`}
-              variant="primary"
-              external
-            >
-              <Send size={16} />
-              Send a Message
-            </Button>
+            <Magnet padding={50} disabled={false} magnetStrength={30}>
+              <Button
+                href={`mailto:${personalInfo.email}`}
+                variant="primary"
+                external
+              >
+                <Send size={16} />
+                Send a Message
+              </Button>
+            </Magnet>
           </div>
         </GlassContainer>
       </motion.div>

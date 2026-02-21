@@ -1,17 +1,22 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
+import { useRef } from "react";
 import { upworkJobSuccess, testimonials } from "@/lib/data";
 import { fadeInUp } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import GlassContainer from "./GlassContainer";
 import { Quote } from "lucide-react";
+import Counter from "./Counter";
 
 export default function TrustLine() {
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const isBadgeInView = useInView(badgeRef, { once: true, amount: 0.5 });
+
   return (
     <section
       id="trust"
-      className="relative flex min-h-[50vh] flex-col items-center justify-center px-6 py-32"
+      className="relative flex flex-col items-center justify-center px-6 py-20"
     >
       <SectionTitle
         title="What Clients Say"
@@ -25,9 +30,18 @@ export default function TrustLine() {
         viewport={{ once: true, margin: "-60px" }}
         className="mx-auto w-full max-w-3xl space-y-6"
       >
-        <div className="flex justify-center">
-          <span className="liquid-glass-thin rounded-full px-6 py-2 text-sm font-medium text-muted">
-            {upworkJobSuccess}% Job Success
+        <div ref={badgeRef} className="flex justify-center">
+          <span className="liquid-glass-thin flex items-center gap-1 rounded-full px-6 py-2 text-sm font-medium text-muted">
+            <Counter
+              value={upworkJobSuccess}
+              startAnimation={isBadgeInView}
+              fontSize={14}
+              padding={0}
+              gap={0}
+              horizontalPadding={0}
+              gradientHeight={0}
+            />
+            % Job Success
           </span>
         </div>
 

@@ -1,63 +1,30 @@
 "use client";
 
-import {
-  motion,
-  useScroll,
-  useTransform,
-} from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
+import { useTheme } from "next-themes";
 import { personalInfo } from "@/lib/data";
 import { heroTitle, heroSubtitle } from "@/lib/animations";
 import Button from "./Button";
 import { ArrowDown, Globe, Smartphone } from "lucide-react";
-
-function FloatingOrb({
-  size,
-  x,
-  y,
-  delay,
-  color,
-}: {
-  size: number;
-  x: string;
-  y: string;
-  delay: number;
-  color: string;
-}) {
-  return (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{
-        duration: 2,
-        delay,
-        ease: [0.25, 0.1, 0.25, 1],
-      }}
-      className="pointer-events-none absolute rounded-full"
-      style={{
-        width: size,
-        height: size,
-        left: x,
-        top: y,
-        background: color,
-        filter: "blur(100px)",
-      }}
-    />
-  );
-}
+import Aurora from "./Aurora";
 
 export default function Hero() {
   const ref = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -80]);
   const textY = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  const isDark = resolvedTheme === "dark";
+  const auroraColors = isDark
+    ? ["#2997ff", "#a78bfa", "#ec4899"]
+    : ["#0071e3", "#7c3aed", "#ec4899"];
 
   return (
     <section
@@ -65,33 +32,23 @@ export default function Hero() {
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
     >
-      <motion.div style={{ y: y1 }} className="absolute inset-0">
-        <FloatingOrb
-          size={500}
-          x="5%"
-          y="10%"
-          delay={0.2}
-          color="rgba(0, 113, 227, 0.15)"
+      <motion.div style={{ y: y1 }} className={`absolute inset-0 ${isDark ? "" : "opacity-60"}`}>
+        <Aurora
+          colorStops={auroraColors}
+          blend={0.5}
+          amplitude={isDark ? 1.0 : 0.8}
+          speed={1}
         />
       </motion.div>
-      <motion.div style={{ y: y2 }} className="absolute inset-0">
-        <FloatingOrb
-          size={400}
-          x="60%"
-          y="15%"
-          delay={0.5}
-          color="rgba(124, 58, 237, 0.12)"
+
+      {!isDark && (
+        <div
+          className="pointer-events-none absolute inset-0 z-5"
+          style={{
+            background: "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(245,245,247,0.7), transparent 70%)",
+          }}
         />
-      </motion.div>
-      <motion.div style={{ y: y3 }} className="absolute inset-0">
-        <FloatingOrb
-          size={350}
-          x="35%"
-          y="55%"
-          delay={0.8}
-          color="rgba(236, 72, 153, 0.08)"
-        />
-      </motion.div>
+      )}
 
       <motion.div
         style={{ y: textY, opacity }}
@@ -120,7 +77,7 @@ export default function Hero() {
           variants={heroSubtitle}
           initial="hidden"
           animate="visible"
-          className="mt-6 max-w-lg text-lg leading-relaxed text-muted md:text-xl"
+          className="mt-6 max-w-lg text-lg leading-relaxed text-foreground/70 md:text-xl"
         >
           {personalInfo.tagline}
         </motion.p>
@@ -159,11 +116,11 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.2 }}
-          className="mt-20"
+          className="mt-14"
         >
           <a
             href="#experience"
-            className="flex flex-col items-center gap-2 text-muted transition-colors hover:text-foreground"
+            className="flex flex-col items-center gap-2 text-foreground/50 transition-colors hover:text-foreground"
           >
             <span className="text-xs uppercase tracking-widest">Scroll</span>
             <motion.div

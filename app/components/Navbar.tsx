@@ -11,7 +11,7 @@ const emptySubscribe = () => () => {};
 
 export default function Navbar() {
   const { scrollY } = useScroll();
-  const bgOpacity = useTransform(scrollY, [0, 100], [0, 1]);
+  const bgOpacity = useTransform(scrollY, [0, 100], [0.6, 1]);
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -48,7 +48,7 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-muted transition-colors duration-200 hover:text-foreground"
+                className="text-sm font-medium text-foreground/70 transition-colors duration-200 hover:text-foreground"
               >
                 {link.label}
               </a>
@@ -56,7 +56,7 @@ export default function Navbar() {
             {mounted && (
               <button
                 onClick={toggleTheme}
-                className="rounded-full p-2 text-muted transition-colors hover:bg-glass hover:text-foreground"
+                className="rounded-full p-2 text-foreground/70 transition-colors hover:bg-glass hover:text-foreground"
                 aria-label="Toggle theme"
               >
                 {resolvedTheme === "dark" ? (
@@ -72,7 +72,7 @@ export default function Navbar() {
             {mounted && (
               <button
                 onClick={toggleTheme}
-                className="rounded-full p-2 text-muted transition-colors hover:text-foreground"
+                className="rounded-full p-2 text-foreground/70 transition-colors hover:text-foreground"
                 aria-label="Toggle theme"
               >
                 {resolvedTheme === "dark" ? (
@@ -84,7 +84,7 @@ export default function Navbar() {
             )}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="rounded-full p-2 text-muted transition-colors hover:text-foreground"
+              className="rounded-full p-2 text-foreground/70 transition-colors hover:text-foreground"
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
