@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useRef, useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { personalInfo } from "@/lib/data";
 import { heroTitle, heroSubtitle } from "@/lib/animations";
@@ -21,8 +21,11 @@ export default function Hero() {
   const textY = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  const emptySubscribe = () => () => {};
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+
   const isDark = resolvedTheme === "dark";
-  const auroraColors = isDark
+  const auroraColors = mounted && isDark
     ? ["#2997ff", "#a78bfa", "#ec4899"]
     : ["#0071e3", "#7c3aed", "#ec4899"];
 
@@ -32,23 +35,21 @@ export default function Hero() {
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
     >
-      <motion.div style={{ y: y1 }} className={`absolute inset-0 ${isDark ? "" : "opacity-60"}`}>
+      <motion.div style={{ y: y1 }} className="absolute inset-0 opacity-60 dark:opacity-100">
         <Aurora
           colorStops={auroraColors}
           blend={0.5}
-          amplitude={isDark ? 1.0 : 0.8}
+          amplitude={mounted && isDark ? 1.0 : 0.8}
           speed={1}
         />
       </motion.div>
 
-      {!isDark && (
-        <div
-          className="pointer-events-none absolute inset-0 z-5"
-          style={{
-            background: "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(245,245,247,0.7), transparent 70%)",
-          }}
-        />
-      )}
+      <div
+        className="pointer-events-none absolute inset-0 z-5 dark:hidden"
+        style={{
+          background: "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(245,245,247,0.7), transparent 70%)",
+        }}
+      />
 
       <motion.div
         style={{ y: textY, opacity }}

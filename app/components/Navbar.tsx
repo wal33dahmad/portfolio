@@ -6,6 +6,7 @@ import { Sun, Moon, Menu, X } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
 import { navLinks } from "@/lib/data";
 import { navFadeIn } from "@/lib/animations";
+import { PortfolioLogo } from "./PortfolioLogo";
 
 const emptySubscribe = () => () => {};
 
@@ -36,11 +37,8 @@ export default function Navbar() {
           }}
         />
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a
-            href="#home"
-            className="text-lg font-semibold tracking-tight text-foreground transition-colors"
-          >
-            WA
+          <a href="#home" className="transition-transform hover:scale-105">
+            <PortfolioLogo />
           </a>
 
           <div className="hidden items-center gap-8 md:flex">

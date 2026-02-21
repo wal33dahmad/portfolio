@@ -1,9 +1,12 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { fadeInUp } from "@/lib/animations";
 import GradientText from "./GradientText";
+
+const emptySubscribe = () => () => {};
 
 interface SectionTitleProps {
   title: string;
@@ -17,9 +20,10 @@ export default function SectionTitle({
   className = "",
 }: SectionTitleProps) {
   const { resolvedTheme } = useTheme();
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   const gradientColors =
-    resolvedTheme === "dark"
+    mounted && resolvedTheme === "dark"
       ? ["#a78bfa", "#FF9FFC", "#2997ff"]
       : ["#5227FF", "#ec4899", "#0071e3"];
 

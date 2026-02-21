@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     description:
       "Full-Stack Web & Mobile Developer building scalable products. Specializes in React, Next.js, and React Native.",
   },
+  icons: {
+    icon: "/icon.svg",
+  },
   robots: {
     index: true,
     follow: true,
