@@ -11,7 +11,7 @@ export default function EducationCertifications() {
   return (
     <section
       id="education"
-      className="relative flex min-h-[50vh] flex-col items-center justify-center px-6 py-32"
+      className="relative flex flex-col items-center justify-center px-6 py-20"
     >
       <SectionTitle
         title="Education & Certifications"

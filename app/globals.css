@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "shadcn/tailwind.css";
 
 @theme inline {
   --color-background: var(--background);
@@ -23,7 +24,7 @@
   --glass-hover: rgba(255, 255, 255, 0.7);
   --accent: #0071e3;
   --accent-mobile: #7c3aed;
-  --muted: #6e6e73;
+  --muted: #515154;
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
     0 2px 8px rgba(0, 0, 0, 0.04);
   --glass-blur: blur(40px);
@@ -39,7 +40,7 @@
   --glass-hover: rgba(255, 255, 255, 0.1);
   --accent: #2997ff;
   --accent-mobile: #a78bfa;
-  --muted: #86868b;
+  --muted: #a1a1a6;
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
     0 2px 8px rgba(0, 0, 0, 0.2);
   --glass-specular: rgba(255, 255, 255, 0.15);
@@ -165,7 +166,6 @@ h6 {
 }
 
 @supports not (backdrop-filter: blur(24px)) {
-  .glass-fallback,
   .liquid-glass {
     background: var(--glass) !important;
     opacity: 0.95;

@@ -82,7 +82,7 @@ export function BrowserFrame({
 function TriplePhoneShowcase({ phones }: { phones: ProjectScreenshot[] }) {
   const [left, center, right] = phones;
   return (
-    <div className="relative flex w-full items-center justify-center overflow-hidden py-8 sm:py-10">
+    <div className="relative flex w-full items-center justify-center overflow-hidden py-8 sm:py-12">
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -90,15 +90,15 @@ function TriplePhoneShowcase({ phones }: { phones: ProjectScreenshot[] }) {
             "radial-gradient(ellipse 60% 50% at 50% 55%, rgba(124,58,237,0.06), transparent)",
         }}
       />
-      <div className="relative mx-auto" style={{ width: "min(90%, 420px)", height: "320px" }}>
+      <div className="relative mx-auto" style={{ width: "min(95%, 600px)", height: "420px" }}>
         {left && (
           <div
             className="absolute z-1 drop-shadow-2xl"
             style={{
-              width: "35%",
+              width: "34%",
               left: "2%",
-              bottom: "4%",
-              transform: "rotate(-8deg)",
+              bottom: "2%",
+              transform: "rotate(-6deg)",
             }}
           >
             <PhoneFrame screenshot={left} />
@@ -108,7 +108,7 @@ function TriplePhoneShowcase({ phones }: { phones: ProjectScreenshot[] }) {
           <div
             className="absolute z-3 drop-shadow-2xl"
             style={{
-              width: "38%",
+              width: "36%",
               left: "50%",
               top: "0",
               transform: "translateX(-50%)",
@@ -121,10 +121,10 @@ function TriplePhoneShowcase({ phones }: { phones: ProjectScreenshot[] }) {
           <div
             className="absolute z-1 drop-shadow-2xl"
             style={{
-              width: "35%",
+              width: "34%",
               right: "2%",
-              bottom: "4%",
-              transform: "rotate(8deg)",
+              bottom: "2%",
+              transform: "rotate(6deg)",
             }}
           >
             <PhoneFrame screenshot={right} />
@@ -190,13 +190,8 @@ export function DeviceShowcase({
     if (fillHeight) {
       return (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-hidden px-4 py-4">
-          <div className="flex h-full w-full items-center justify-center">
-            <div
-              className="h-full w-auto max-w-[70%] shrink-0"
-              style={{ aspectRatio: "9/19.5" }}
-            >
-              <PhoneFrame screenshot={phones[0]} />
-            </div>
+          <div className="w-[60%] max-w-[220px] shrink-0 sm:w-[70%] sm:max-w-[260px]">
+            <PhoneFrame screenshot={phones[0]} />
           </div>
         </div>
       );

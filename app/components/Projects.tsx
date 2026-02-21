@@ -20,7 +20,7 @@ function TypeBadge({ type }: { type: ProjectType }) {
         isMobile
           ? "bg-accent-mobile/15 text-accent-mobile"
           : isBoth
-            ? "bg-white/15 text-white"
+            ? "bg-foreground/10 text-foreground"
             : "bg-accent/15 text-accent"
       }`}
     >
@@ -41,35 +41,36 @@ function FeaturedCard({ project }: { project: Project }) {
         />
         {project.screenshots && project.screenshots.length > 0 && (
           <div className="relative overflow-hidden">
-            <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-background/70 via-background/20 to-transparent" />
             <DeviceShowcase
               screenshots={project.screenshots}
               variant="wide"
             />
-            <div className="absolute inset-x-0 bottom-0 z-20 p-5 sm:p-6">
-              <div className="mb-2 flex items-center gap-2">
-                <TypeBadge type={project.type} />
-                {project.highlight && (
-                  <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-                    {project.highlight}
-                  </span>
-                )}
-              </div>
-              <h3 className="text-lg font-semibold text-foreground sm:text-xl">
-                {project.title}
-              </h3>
-              <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted">
-                {project.description}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium sm:text-xs ${isMobile ? "bg-accent-mobile/10 text-accent-mobile" : "bg-accent/10 text-accent"}`}
-                  >
-                    {tag}
-                  </span>
-                ))}
+            <div className="absolute top-3 left-3 z-20 flex items-center gap-2 sm:top-4 sm:left-4">
+              <TypeBadge type={project.type} />
+              {project.highlight && (
+                <span className="liquid-glass-thin rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-foreground">
+                  {project.highlight}
+                </span>
+              )}
+            </div>
+            <div className="absolute bottom-0 left-0 z-20 p-3 sm:p-4">
+              <div className="max-w-md rounded-2xl border border-glass-border bg-glass p-5 backdrop-blur-2xl backdrop-saturate-150 sm:p-6">
+                <h3 className="text-lg font-semibold text-foreground sm:text-xl">
+                  {project.title}
+                </h3>
+                <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted">
+                  {project.description}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className={`liquid-glass-thin rounded-full px-2.5 py-0.5 text-[10px] font-medium sm:text-xs ${isMobile ? "text-accent-mobile" : "text-accent"}`}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -83,36 +84,37 @@ function BentoCard({ project }: { project: Project }) {
   const isMobile = project.type === "mobile";
 
   return (
-    <Card className="flex h-full flex-col">
+    <Card className="relative flex h-full min-h-[400px] flex-col overflow-hidden sm:min-h-0">
       {project.screenshots && project.screenshots.length > 0 && (
-        <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
-          <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-background/60 via-transparent to-transparent" />
+        <div className={`relative flex min-h-0 flex-1 flex-col overflow-hidden ${project.id === "patron-manager" ? "pb-32" : ""}`}>
           <DeviceShowcase
             screenshots={project.screenshots}
             variant="standard"
             fillHeight={project.id === "patron-manager"}
           />
-          <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
+          <div className="absolute top-2 left-2 z-10">
             <TypeBadge type={project.type} />
           </div>
         </div>
       )}
-      <div className="p-4">
-        <h3 className="text-sm font-semibold text-foreground sm:text-base">
-          {project.title}
-        </h3>
-        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
-          {project.description}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${isMobile ? "bg-accent-mobile/10 text-accent-mobile" : "bg-accent/10 text-accent"}`}
-            >
-              {tag}
-            </span>
-          ))}
+      <div className="absolute inset-x-0 bottom-0 z-20">
+        <div className="border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
+          <h3 className="text-sm font-semibold text-foreground">
+            {project.title}
+          </h3>
+          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
+            {project.description}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className={`liquid-glass-thin rounded-full px-2 py-0.5 text-[10px] font-medium ${isMobile ? "text-accent-mobile" : "text-accent"}`}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </Card>
@@ -125,7 +127,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="relative flex min-h-[70vh] flex-col items-center justify-center px-6 py-32"
+      className="relative flex flex-col items-center justify-center px-6 py-20"
     >
       <SectionTitle
         title="Things I've Built"
@@ -141,7 +143,7 @@ export default function Projects() {
       >
         {featured && <FeaturedCard project={featured} />}
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[320px]">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[360px]">
           {rest[0] && (
             <motion.div variants={fadeInUp} className="sm:col-span-2 sm:row-span-2">
               <BentoCard project={rest[0]} />
