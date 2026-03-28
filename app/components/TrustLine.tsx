@@ -2,14 +2,19 @@
 
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { upworkJobSuccess, testimonials } from "@/lib/data";
+import type { Testimonial } from "@/lib/types";
 import { fadeInUp } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import GlassContainer from "./GlassContainer";
 import { Quote } from "lucide-react";
 import Counter from "./Counter";
 
-export default function TrustLine() {
+interface TrustLineProps {
+  upworkJobSuccess: number;
+  testimonials: Testimonial[];
+}
+
+export default function TrustLine({ upworkJobSuccess, testimonials }: TrustLineProps) {
   const badgeRef = useRef<HTMLDivElement>(null);
   const isBadgeInView = useInView(badgeRef, { once: true, amount: 0.5 });
 
@@ -46,15 +51,15 @@ export default function TrustLine() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-          {testimonials.slice(0, 4).map((quote, i) => (
-            <motion.div key={i} variants={fadeInUp}>
+          {testimonials.slice(0, 4).map((testimonial) => (
+            <motion.div key={testimonial.id} variants={fadeInUp}>
               <GlassContainer className="p-6">
                 <Quote
                   className="mb-2 h-8 w-8 text-accent/60"
                   aria-hidden
                 />
                 <p className="text-sm leading-relaxed text-muted">
-                  &ldquo;{quote}&rdquo;
+                  &ldquo;{testimonial.quote}&rdquo;
                 </p>
               </GlassContainer>
             </motion.div>

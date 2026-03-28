@@ -2,28 +2,32 @@
 
 import { motion } from "motion/react";
 import { Github, Linkedin, Mail } from "lucide-react";
-import { personalInfo } from "@/lib/data";
+import type { PersonalInfo } from "@/lib/types";
 import { fadeInUp } from "@/lib/animations";
 
-const socialLinks = [
-  {
-    icon: Mail,
-    href: `mailto:${personalInfo.email}`,
-    label: "Email",
-  },
-  {
-    icon: Github,
-    href: personalInfo.github,
-    label: "GitHub",
-  },
-  {
-    icon: Linkedin,
-    href: personalInfo.linkedin,
-    label: "LinkedIn",
-  },
-];
+interface FooterProps {
+  personalInfo: PersonalInfo;
+}
 
-export default function Footer() {
+export default function Footer({ personalInfo }: FooterProps) {
+  const socialLinks = [
+    {
+      icon: Mail,
+      href: `mailto:${personalInfo.email}`,
+      label: "Email",
+    },
+    {
+      icon: Github,
+      href: personalInfo.github,
+      label: "GitHub",
+    },
+    {
+      icon: Linkedin,
+      href: personalInfo.linkedin,
+      label: "LinkedIn",
+    },
+  ];
+
   return (
     <motion.footer
       variants={fadeInUp}

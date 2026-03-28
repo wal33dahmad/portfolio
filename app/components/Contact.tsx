@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { personalInfo } from "@/lib/data";
+import type { PersonalInfo } from "@/lib/types";
 import { fadeInUp } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import GlassContainer from "./GlassContainer";
@@ -9,34 +9,38 @@ import Button from "./Button";
 import { Mail, Github, Linkedin, Send, Phone } from "lucide-react";
 import Magnet from "@/app/components/Magnet";
 
-const contactLinks = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: personalInfo.email,
-    href: `mailto:${personalInfo.email}`,
-  },
-  {
-    icon: Phone,
-    label: "Phone",
-    value: personalInfo.phone,
-    href: `tel:${personalInfo.phone?.replace(/\s/g, "")}`,
-  },
-  {
-    icon: Github,
-    label: "GitHub",
-    value: "Explore my work on GitHub",
-    href: personalInfo.github,
-  },
-  {
-    icon: Linkedin,
-    label: "LinkedIn",
-    value: "Connect on LinkedIn",
-    href: personalInfo.linkedin,
-  },
-];
+interface ContactProps {
+  personalInfo: PersonalInfo;
+}
 
-export default function Contact() {
+export default function Contact({ personalInfo }: ContactProps) {
+  const contactLinks = [
+    {
+      icon: Mail,
+      label: "Email",
+      value: personalInfo.email,
+      href: `mailto:${personalInfo.email}`,
+    },
+    {
+      icon: Phone,
+      label: "Phone",
+      value: personalInfo.phone,
+      href: `tel:${personalInfo.phone?.replace(/\s/g, "")}`,
+    },
+    {
+      icon: Github,
+      label: "GitHub",
+      value: "Explore my work on GitHub",
+      href: personalInfo.github,
+    },
+    {
+      icon: Linkedin,
+      label: "LinkedIn",
+      value: "Connect on LinkedIn",
+      href: personalInfo.linkedin,
+    },
+  ];
+
   return (
     <section
       id="contact"

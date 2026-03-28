@@ -3,13 +3,17 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef, useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
-import { personalInfo } from "@/lib/data";
+import type { PersonalInfo } from "@/lib/types";
 import { heroTitle, heroSubtitle } from "@/lib/animations";
 import Button from "./Button";
 import { ArrowDown, Globe, Smartphone } from "lucide-react";
 import Aurora from "./Aurora";
 
-export default function Hero() {
+interface HeroProps {
+  personalInfo: PersonalInfo;
+}
+
+export default function Hero({ personalInfo }: HeroProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
   const { scrollYProgress } = useScroll({
@@ -35,7 +39,7 @@ export default function Hero() {
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
     >
-      <motion.div style={{ y: y1 }} className="absolute inset-0 opacity-60 dark:opacity-100">
+      <motion.div style={{ y: y1 }} className="absolute inset-0 opacity-75 dark:opacity-100">
         <Aurora
           colorStops={auroraColors}
           blend={0.5}

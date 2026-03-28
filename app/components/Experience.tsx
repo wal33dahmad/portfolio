@@ -1,13 +1,17 @@
 "use client";
 
 import { motion } from "motion/react";
-import { experience } from "@/lib/data";
+import type { ExperienceItem } from "@/lib/types";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import GlassContainer from "./GlassContainer";
 import { Briefcase, MapPin, Calendar } from "lucide-react";
 
-export default function Experience() {
+interface ExperienceProps {
+  experience: ExperienceItem[];
+}
+
+export default function Experience({ experience }: ExperienceProps) {
   return (
     <section
       id="experience"
@@ -26,7 +30,7 @@ export default function Experience() {
         className="mx-auto w-full max-w-3xl space-y-6"
       >
         {experience.map((item) => (
-          <motion.div key={`${item.company}-${item.start}`} variants={fadeInUp}>
+          <motion.div key={item.id} variants={fadeInUp}>
             <GlassContainer className="p-6 sm:p-8">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-center gap-2">
@@ -49,7 +53,7 @@ export default function Experience() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Calendar size={14} />
-                    {item.start} – {item.end}
+                    {item.start_date} – {item.end_date}
                   </span>
                 </div>
                 <ul className="mt-2 list-inside list-disc space-y-2 text-sm leading-relaxed text-muted">

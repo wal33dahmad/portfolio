@@ -1,6 +1,6 @@
 -- personal_info (single row)
 create table personal_info (
-  id int primary key default 1,
+  id int primary key default 1 check (id = 1),
   name text not null,
   title text not null,
   tagline text not null,
@@ -26,7 +26,7 @@ create table projects (
 
 -- experience
 create table experience (
-  id serial primary key,
+  id int primary key,
   company text not null,
   role text not null,
   location text not null,
@@ -48,14 +48,14 @@ create table skills (
 
 -- education (single row)
 create table education (
-  id int primary key default 1,
+  id int primary key default 1 check (id = 1),
   school text not null,
   degree text not null
 );
 
 -- certifications
 create table certifications (
-  id serial primary key,
+  id int primary key,
   issuer text not null,
   name text not null,
   "order" int not null default 0
@@ -63,7 +63,7 @@ create table certifications (
 
 -- testimonials
 create table testimonials (
-  id serial primary key,
+  id int primary key,
   quote text not null,
   "order" int not null default 0
 );

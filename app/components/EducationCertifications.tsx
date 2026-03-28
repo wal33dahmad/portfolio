@@ -1,13 +1,18 @@
 "use client";
 
 import { motion } from "motion/react";
-import { education, certifications } from "@/lib/data";
+import type { Education, Certification } from "@/lib/types";
 import { fadeInUp } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import GlassContainer from "./GlassContainer";
 import { GraduationCap, Award } from "lucide-react";
 
-export default function EducationCertifications() {
+interface EducationCertificationsProps {
+  education: Education;
+  certifications: Certification[];
+}
+
+export default function EducationCertifications({ education, certifications }: EducationCertificationsProps) {
   return (
     <section
       id="education"
@@ -41,7 +46,7 @@ export default function EducationCertifications() {
 
         <div className="grid gap-4 sm:grid-cols-1">
           {certifications.map((cert) => (
-            <motion.div key={`${cert.issuer}-${cert.name}`} variants={fadeInUp}>
+            <motion.div key={cert.id} variants={fadeInUp}>
               <GlassContainer className="p-6 sm:p-8">
                 <div className="flex items-start gap-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">

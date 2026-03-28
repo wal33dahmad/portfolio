@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { useTheme } from "next-themes";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
-import { navLinks } from "@/lib/data";
+import { navLinks } from "@/lib/nav";
 import { navFadeIn } from "@/lib/animations";
 import { PortfolioLogo } from "./PortfolioLogo";
 

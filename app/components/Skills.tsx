@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { skillDomains } from "@/lib/data";
+import type { SkillDomain } from "@/lib/types";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import { Globe, Smartphone } from "lucide-react";
@@ -11,7 +11,11 @@ const domainIcons: Record<string, React.ElementType> = {
   Smartphone,
 };
 
-export default function Skills() {
+interface SkillsProps {
+  skillDomains: SkillDomain[];
+}
+
+export default function Skills({ skillDomains }: SkillsProps) {
   return (
     <section
       id="skills"

@@ -1,12 +1,16 @@
 "use client";
 
 import { motion } from "motion/react";
-import { projects, type Project, type ProjectType } from "@/lib/data";
+import type { Project, ProjectType } from "@/lib/types";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import Card from "./Card";
 import { DeviceShowcase } from "./DeviceFrames";
 import { Globe, LayoutGrid, Smartphone } from "lucide-react";
+
+interface ProjectsProps {
+  projects: Project[];
+}
 
 function TypeBadge({ type }: { type: ProjectType }) {
   const isMobile = type === "mobile";
@@ -121,7 +125,7 @@ function BentoCard({ project }: { project: Project }) {
   );
 }
 
-export default function Projects() {
+export default function Projects({ projects }: ProjectsProps) {
   const [featured, ...rest] = projects;
 
   return (

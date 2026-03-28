@@ -1,9 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import { type ProjectScreenshot } from "@/lib/data";
+import type { CSSProperties } from "react";
+import type { ProjectScreenshot } from "@/lib/types";
 
 /* ─── Phone Frame ─────────────────────────────────────────────── */
+
+/** Matches `public/images/phone-frame.svg` viewBox. */
+const FRAME = { w: 971, h: 2048 } as const;
+
+/** Screen cutout as defined in phone-frame.svg. */
+const SCREEN = { x: 43, y: 44, w: 879, h: 1962, rx: 120 } as const;
+
+function screenStyle(): CSSProperties {
+  return {
+    left: `${(SCREEN.x / FRAME.w) * 100}%`,
+    top: `${(SCREEN.y / FRAME.h) * 100}%`,
+    width: `${(SCREEN.w / FRAME.w) * 100}%`,
+    height: `${(SCREEN.h / FRAME.h) * 100}%`,
+    borderRadius: `${(SCREEN.rx / SCREEN.w) * 100}% / ${(SCREEN.rx / SCREEN.h) * 100}%`,
+  };
+}
 
 interface PhoneFrameProps {
   screenshot: ProjectScreenshot;
@@ -11,34 +28,32 @@ interface PhoneFrameProps {
 }
 
 export function PhoneFrame({ screenshot, className = "" }: PhoneFrameProps) {
-  const isPixel = screenshot.device === "pixel";
-
   return (
-    <div className={`relative ${className}`}>
+    <div
+      className={`relative w-full ${className}`}
+      style={{ aspectRatio: `${FRAME.w} / ${FRAME.h}` }}
+    >
       <div
-        className="relative overflow-hidden rounded-4xl border-[3px] border-foreground/10 bg-foreground/5 shadow-2xl sm:rounded-[2.5rem]"
-        style={{ width: "100%", aspectRatio: "9 / 19.5" }}
+        className="absolute z-10 overflow-hidden bg-[#080810]"
+        style={screenStyle()}
       >
-        <div className="absolute inset-[3px] overflow-hidden rounded-[1.7rem] bg-black sm:rounded-[2.2rem]">
-          {isPixel ? (
-            <div className="absolute left-1/2 top-2 z-10 h-2 w-2 -translate-x-1/2 rounded-full bg-black ring-1 ring-foreground/10 sm:top-2.5 sm:h-2.5 sm:w-2.5" />
-          ) : (
-            <div className="absolute left-1/2 top-1.5 z-10 h-3 w-11 -translate-x-1/2 rounded-full bg-black ring-1 ring-foreground/10 sm:top-2 sm:h-[14px] sm:w-[60px]" />
-          )}
-          <Image
-            src={screenshot.src}
-            alt={screenshot.alt}
-            fill
-            className="object-cover object-top"
-            sizes="200px"
-          />
-        </div>
-        <div className="absolute -right-[4px] top-[25%] h-6 w-[3px] rounded-l-sm bg-foreground/10 sm:h-8" />
-        <div className="absolute -right-[4px] top-[35%] h-10 w-[3px] rounded-l-sm bg-foreground/10 sm:h-12" />
-        {!isPixel && (
-          <div className="absolute -left-[4px] top-[22%] h-5 w-[3px] rounded-r-sm bg-foreground/10 sm:h-6" />
-        )}
+        <Image
+          src={screenshot.src}
+          alt={screenshot.alt}
+          fill
+          className="object-cover object-center"
+          sizes="(max-width: 640px) 50vw, 280px"
+          style={{ objectFit: "cover", minHeight: "100%", minWidth: "100%" }}
+        />
       </div>
+      <Image
+        src="/images/phone-frame.webp"
+        alt=""
+        fill
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-20 h-full w-full select-none"
+        sizes="200px"
+      />
     </div>
   );
 }
