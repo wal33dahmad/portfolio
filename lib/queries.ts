@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getSupabaseClient } from "./supabase";
 import type {
   PersonalInfo,
@@ -9,65 +10,28 @@ import type {
   Testimonial,
 } from "./types";
 
-export async function getPersonalInfo(): Promise<PersonalInfo> {
-  const { data, error } = await getSupabaseClient()
-    .from("personal_info")
-    .select("*")
-    .single();
-  if (error) throw new Error(`Failed to fetch personal_info: ${error.message}`);
-  return data as PersonalInfo;
+export interface PageData {
+  personalInfo: PersonalInfo;
+  experience: ExperienceItem[];
+  skillDomains: SkillDomain[];
+  education: Education;
+  certifications: Certification[];
+  testimonials: Testimonial[];
 }
 
-export async function getProjects(): Promise<Project[]> {
+/** Single RPC call — all non-project page data. Cached per request. */
+export const getPageData = cache(async (): Promise<PageData> => {
+  const { data, error } = await getSupabaseClient().rpc("get_page_data");
+  if (error) throw new Error(`get_page_data: ${error.message}`);
+  return data as PageData;
+});
+
+/** Projects fetched separately so they stream independently. */
+export const getProjects = cache(async (): Promise<Project[]> => {
   const { data, error } = await getSupabaseClient()
     .from("projects")
     .select("*")
     .order("order", { ascending: true });
-  if (error) throw new Error(`Failed to fetch projects: ${error.message}`);
+  if (error) throw new Error(`projects: ${error.message}`);
   return data as Project[];
-}
-
-export async function getExperience(): Promise<ExperienceItem[]> {
-  const { data, error } = await getSupabaseClient()
-    .from("experience")
-    .select("*")
-    .order("order", { ascending: true });
-  if (error) throw new Error(`Failed to fetch experience: ${error.message}`);
-  return data as ExperienceItem[];
-}
-
-export async function getSkills(): Promise<SkillDomain[]> {
-  const { data, error } = await getSupabaseClient()
-    .from("skills")
-    .select("*")
-    .order("order", { ascending: true });
-  if (error) throw new Error(`Failed to fetch skills: ${error.message}`);
-  return data as SkillDomain[];
-}
-
-export async function getEducation(): Promise<Education> {
-  const { data, error } = await getSupabaseClient()
-    .from("education")
-    .select("*")
-    .single();
-  if (error) throw new Error(`Failed to fetch education: ${error.message}`);
-  return data as Education;
-}
-
-export async function getCertifications(): Promise<Certification[]> {
-  const { data, error } = await getSupabaseClient()
-    .from("certifications")
-    .select("*")
-    .order("order", { ascending: true });
-  if (error) throw new Error(`Failed to fetch certifications: ${error.message}`);
-  return data as Certification[];
-}
-
-export async function getTestimonials(): Promise<Testimonial[]> {
-  const { data, error } = await getSupabaseClient()
-    .from("testimonials")
-    .select("*")
-    .order("order", { ascending: true });
-  if (error) throw new Error(`Failed to fetch testimonials: ${error.message}`);
-  return data as Testimonial[];
-}
+});

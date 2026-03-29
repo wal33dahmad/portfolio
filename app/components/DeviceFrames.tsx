@@ -1,8 +1,43 @@
 "use client";
 
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type { ProjectScreenshot } from "@/lib/types";
+
+/* ─── iOS-style radial spinner ────────────────────────────────── */
+
+function DeviceLoader({ size = 18 }: { size?: number }) {
+  const bars = 8;
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      style={{
+        animation: "device-spin 0.8s steps(8, end) infinite",
+        transformBox: "fill-box",
+        transformOrigin: "center",
+        flexShrink: 0,
+      }}
+      aria-hidden
+    >
+      <style>{`@keyframes device-spin { to { transform: rotate(360deg); } }`}</style>
+      {Array.from({ length: bars }).map((_, i) => (
+        <rect
+          key={i}
+          x="9"
+          y="2.5"
+          width="2"
+          height="5"
+          rx="1"
+          fill="white"
+          opacity={(i + 1) / bars}
+          transform={`rotate(${(360 / bars) * i} 10 10)`}
+        />
+      ))}
+    </svg>
+  );
+}
 
 /* ─── Phone Frame ─────────────────────────────────────────────── */
 
@@ -28,6 +63,7 @@ interface PhoneFrameProps {
 }
 
 export function PhoneFrame({ screenshot, className = "" }: PhoneFrameProps) {
+  const [loaded, setLoaded] = useState(false);
   return (
     <div
       className={`relative w-full ${className}`}
@@ -37,13 +73,18 @@ export function PhoneFrame({ screenshot, className = "" }: PhoneFrameProps) {
         className="absolute z-10 overflow-hidden bg-[#080810]"
         style={screenStyle()}
       >
+        {/* Spinner visible until image fully loads */}
+        <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
+          <DeviceLoader size={18} />
+        </div>
         <Image
           src={screenshot.src}
           alt={screenshot.alt}
           fill
-          className="object-cover object-center"
+          className={`object-cover object-center transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
           sizes="(max-width: 640px) 50vw, 280px"
           style={{ objectFit: "cover", minHeight: "100%", minWidth: "100%" }}
+          onLoad={() => setLoaded(true)}
         />
       </div>
       <Image
@@ -69,6 +110,7 @@ export function BrowserFrame({
   screenshot,
   className = "",
 }: BrowserFrameProps) {
+  const [loaded, setLoaded] = useState(false);
   return (
     <div className={`relative ${className}`}>
       <div className="overflow-hidden rounded-lg border border-foreground/10 bg-foreground/5 shadow-2xl sm:rounded-xl">
@@ -78,13 +120,18 @@ export function BrowserFrame({
           <div className="h-2 w-2 rounded-full bg-[#28C840] sm:h-2.5 sm:w-2.5" />
           <div className="mx-auto h-3.5 w-24 rounded-md bg-foreground/5 sm:h-4 sm:w-32" />
         </div>
-        <div className="relative" style={{ aspectRatio: "16 / 10" }}>
+        <div className="relative bg-foreground/3" style={{ aspectRatio: "16 / 10" }}>
+          {/* Spinner visible until image fully loads */}
+          <div className="absolute inset-0 flex justify-center pt-[20%]" aria-hidden>
+            <DeviceLoader size={16} />
+          </div>
           <Image
             src={screenshot.src}
             alt={screenshot.alt}
             fill
-            className="object-cover object-top"
+            className={`object-cover object-top transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
             sizes="(max-width: 640px) 90vw, 500px"
+            onLoad={() => setLoaded(true)}
           />
         </div>
       </div>
@@ -97,7 +144,7 @@ export function BrowserFrame({
 function TriplePhoneShowcase({ phones }: { phones: ProjectScreenshot[] }) {
   const [left, center, right] = phones;
   return (
-    <div className="relative flex w-full items-center justify-center overflow-hidden py-8 sm:py-12">
+    <div className="relative flex w-full items-center justify-center overflow-hidden py-6 sm:py-12">
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -105,16 +152,23 @@ function TriplePhoneShowcase({ phones }: { phones: ProjectScreenshot[] }) {
             "radial-gradient(ellipse 60% 50% at 50% 55%, rgba(124,58,237,0.06), transparent)",
         }}
       />
-      <div className="relative mx-auto" style={{ width: "min(95%, 600px)", height: "420px" }}>
+
+      {/* Mobile: single centered phone */}
+      {center && (
+        <div className="relative z-10 w-[52%] max-w-[200px] drop-shadow-2xl sm:hidden">
+          <PhoneFrame screenshot={center} />
+        </div>
+      )}
+
+      {/* Desktop: triple phone fan */}
+      <div
+        className="relative mx-auto hidden sm:block"
+        style={{ width: "min(95%, 600px)", height: "420px" }}
+      >
         {left && (
           <div
             className="absolute z-1 drop-shadow-2xl"
-            style={{
-              width: "34%",
-              left: "2%",
-              bottom: "2%",
-              transform: "rotate(-6deg)",
-            }}
+            style={{ width: "34%", left: "2%", bottom: "2%", transform: "rotate(-6deg)" }}
           >
             <PhoneFrame screenshot={left} />
           </div>
@@ -122,12 +176,7 @@ function TriplePhoneShowcase({ phones }: { phones: ProjectScreenshot[] }) {
         {center && (
           <div
             className="absolute z-3 drop-shadow-2xl"
-            style={{
-              width: "36%",
-              left: "50%",
-              top: "0",
-              transform: "translateX(-50%)",
-            }}
+            style={{ width: "36%", left: "50%", top: "0", transform: "translateX(-50%)" }}
           >
             <PhoneFrame screenshot={center} />
           </div>
@@ -135,12 +184,7 @@ function TriplePhoneShowcase({ phones }: { phones: ProjectScreenshot[] }) {
         {right && (
           <div
             className="absolute z-1 drop-shadow-2xl"
-            style={{
-              width: "34%",
-              right: "2%",
-              bottom: "2%",
-              transform: "rotate(6deg)",
-            }}
+            style={{ width: "34%", right: "2%", bottom: "2%", transform: "rotate(6deg)" }}
           >
             <PhoneFrame screenshot={right} />
           </div>

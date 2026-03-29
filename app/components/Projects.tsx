@@ -94,9 +94,9 @@ function BentoCard({
   const isMobile = project.type === "mobile";
 
   return (
-    <Card className="flex h-full min-h-[400px] flex-col overflow-hidden sm:min-h-0">
+    <Card className="flex h-full flex-col overflow-hidden">
       {project.screenshots && project.screenshots.length > 0 && (
-        <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="relative flex flex-col overflow-hidden pt-8 sm:min-h-0 sm:flex-1 sm:pt-0">
           <DeviceShowcase
             screenshots={project.screenshots}
             variant="standard"
@@ -129,11 +129,10 @@ function BentoCard({
           </div>
         </div>
       ) : (
-        // Overlay footer — sits on top of image for standard cards
-        <div className="absolute inset-x-0 bottom-0 z-20">
-          <div className="border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
-            <h3 className="text-sm font-semibold text-foreground">
-              {project.title}
+        // Mobile: natural flow below device. Desktop (sm+): absolute overlay.
+        <div className="border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:absolute sm:inset-x-0 sm:bottom-0 sm:z-20 sm:p-4">
+          <h3 className="text-sm font-semibold text-foreground">
+            {project.title}
             </h3>
             <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
               {project.description}
@@ -149,7 +148,6 @@ function BentoCard({
               ))}
             </div>
           </div>
-        </div>
       )}
     </Card>
   );

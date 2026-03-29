@@ -9,7 +9,7 @@ import Footer from "./components/Footer";
 import AmbientBackground from "./components/AmbientBackground";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { getPersonalInfo } from "@/lib/queries";
+import { getPageData } from "@/lib/queries";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,7 +17,7 @@ const inter = Inter({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { name, title, tagline } = await getPersonalInfo();
+  const { personalInfo: { name, title, tagline } } = await getPageData();
   const fullTitle = `${name} — ${title}`;
 
   return {
@@ -52,11 +52,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const personalInfo = await getPersonalInfo();
+  const { personalInfo } = await getPageData();
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
         <ThemeProvider>
           <AmbientBackground />
           <Navbar />
