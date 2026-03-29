@@ -82,7 +82,7 @@ export default function Hero({ personalInfo }: HeroProps) {
           variants={heroSubtitle}
           initial="hidden"
           animate="visible"
-          className="mt-6 max-w-lg text-lg leading-relaxed text-foreground/70 md:text-xl"
+          className="mt-6 max-w-2xl text-lg leading-relaxed text-balance text-foreground/70 md:text-xl"
         >
           {personalInfo.tagline}
         </motion.p>
