@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -14,42 +16,36 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  title: "Waleed Ahmed — Full-Stack Web & Mobile Developer",
-  description:
-    "Full-Stack Web & Mobile Developer building scalable products. Specializes in React, Next.js, and React Native with a focus on performant interfaces and end-to-end delivery.",
-  keywords: [
-    "Waleed Ahmed",
-    "Software Engineer",
-    "React",
-    "Next.js",
-    "React Native",
-    "Portfolio",
-    "Full-Stack",
-  ],
-  authors: [{ name: "Waleed Ahmed" }],
-  openGraph: {
-    type: "website",
-    title: "Waleed Ahmed — Full-Stack Web & Mobile Developer",
-    description:
-      "Full-Stack Web & Mobile Developer building scalable products. Specializes in React, Next.js, and React Native.",
-    siteName: "Waleed Ahmed Portfolio",
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Waleed Ahmed — Full-Stack Web & Mobile Developer",
-    description:
-      "Full-Stack Web & Mobile Developer building scalable products. Specializes in React, Next.js, and React Native.",
-  },
-  icons: {
-    icon: "/icon.svg",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { name, title, tagline } = await getPersonalInfo();
+  const fullTitle = `${name} — ${title}`;
+
+  return {
+    title: fullTitle,
+    description: tagline,
+    keywords: [name, "Software Engineer", "React", "Next.js", "React Native", "Portfolio", "Full-Stack"],
+    authors: [{ name }],
+    openGraph: {
+      type: "website",
+      title: fullTitle,
+      description: tagline,
+      siteName: `${name} Portfolio`,
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: fullTitle,
+      description: tagline,
+    },
+    icons: {
+      icon: "/icon.svg",
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
