@@ -84,25 +84,33 @@ function FeaturedCard({ project }: { project: Project }) {
   );
 }
 
-function BentoCard({ project }: { project: Project }) {
+function BentoCard({
+  project,
+  fillHeight = false,
+}: {
+  project: Project;
+  fillHeight?: boolean;
+}) {
   const isMobile = project.type === "mobile";
 
   return (
-    <Card className="relative flex h-full min-h-[400px] flex-col overflow-hidden sm:min-h-0">
+    <Card className="flex h-full min-h-[400px] flex-col overflow-hidden sm:min-h-0">
       {project.screenshots && project.screenshots.length > 0 && (
-        <div className={`relative flex min-h-0 flex-1 flex-col overflow-hidden ${project.id === "patron-manager" ? "pb-32" : ""}`}>
+        <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
           <DeviceShowcase
             screenshots={project.screenshots}
             variant="standard"
-            fillHeight={project.id === "patron-manager"}
+            fillHeight={fillHeight}
           />
           <div className="absolute top-2 left-2 z-10">
             <TypeBadge type={project.type} />
           </div>
         </div>
       )}
-      <div className="absolute inset-x-0 bottom-0 z-20">
-        <div className="border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
+
+      {fillHeight ? (
+        // Natural footer — sits below the phone, no overlap
+        <div className="shrink-0 border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
           <h3 className="text-sm font-semibold text-foreground">
             {project.title}
           </h3>
@@ -120,7 +128,29 @@ function BentoCard({ project }: { project: Project }) {
             ))}
           </div>
         </div>
-      </div>
+      ) : (
+        // Overlay footer — sits on top of image for standard cards
+        <div className="absolute inset-x-0 bottom-0 z-20">
+          <div className="border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
+            <h3 className="text-sm font-semibold text-foreground">
+              {project.title}
+            </h3>
+            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
+              {project.description}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className={`liquid-glass-thin rounded-full px-2 py-0.5 text-[10px] font-medium ${isMobile ? "text-accent-mobile" : "text-accent"}`}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
@@ -150,7 +180,7 @@ export default function Projects({ projects }: ProjectsProps) {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[360px]">
           {rest[0] && (
             <motion.div variants={fadeInUp} className="sm:col-span-2 sm:row-span-2">
-              <BentoCard project={rest[0]} />
+              <BentoCard project={rest[0]} fillHeight={true} />
             </motion.div>
           )}
           {rest[1] && (
