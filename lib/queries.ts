@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { getSupabaseClient } from "./supabase";
 import type {
   PersonalInfo,
   Project,
@@ -10,7 +10,7 @@ import type {
 } from "./types";
 
 export async function getPersonalInfo(): Promise<PersonalInfo> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from("personal_info")
     .select("*")
     .single();
@@ -19,7 +19,7 @@ export async function getPersonalInfo(): Promise<PersonalInfo> {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from("projects")
     .select("*")
     .order("order", { ascending: true });
@@ -28,7 +28,7 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function getExperience(): Promise<ExperienceItem[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from("experience")
     .select("*")
     .order("order", { ascending: true });
@@ -37,7 +37,7 @@ export async function getExperience(): Promise<ExperienceItem[]> {
 }
 
 export async function getSkills(): Promise<SkillDomain[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from("skills")
     .select("*")
     .order("order", { ascending: true });
@@ -46,7 +46,7 @@ export async function getSkills(): Promise<SkillDomain[]> {
 }
 
 export async function getEducation(): Promise<Education> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from("education")
     .select("*")
     .single();
@@ -55,7 +55,7 @@ export async function getEducation(): Promise<Education> {
 }
 
 export async function getCertifications(): Promise<Certification[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from("certifications")
     .select("*")
     .order("order", { ascending: true });
@@ -64,7 +64,7 @@ export async function getCertifications(): Promise<Certification[]> {
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from("testimonials")
     .select("*")
     .order("order", { ascending: true });
