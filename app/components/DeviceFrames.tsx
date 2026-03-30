@@ -41,10 +41,8 @@ function DeviceLoader({ size = 18 }: { size?: number }) {
 
 /* ─── Phone Frame ─────────────────────────────────────────────── */
 
-/** Matches `public/images/phone-frame.svg` viewBox. */
 const FRAME = { w: 971, h: 2048 } as const;
 
-/** Screen cutout as defined in phone-frame.svg. */
 const SCREEN = { x: 43, y: 44, w: 879, h: 1962, rx: 120 } as const;
 
 function screenStyle(): CSSProperties {
@@ -207,7 +205,7 @@ export function DeviceShowcase({
   variant,
   fillHeight = false,
 }: DeviceShowcaseProps) {
-  if (!screenshots || screenshots.length === 0) return null;
+  if (!Array.isArray(screenshots) || screenshots.length === 0) return null;
 
   const phones = screenshots.filter(
     (s) => s.device === "iphone" || s.device === "pixel"
