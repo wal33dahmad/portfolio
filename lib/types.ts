@@ -41,6 +41,7 @@ export interface Project {
   type: ProjectType;
   highlight?: string;
   link?: string;
+  github?: string;
   screenshots?: ProjectScreenshot[];
   order: number;
 }

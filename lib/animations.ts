@@ -114,3 +114,17 @@ export const slideInRight: Variants = {
     transition: springTransition,
   },
 };
+
+export const extraItem: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: "easeOut", delay: i * 0.1 },
+  }),
+  exit: {
+    opacity: 0,
+    y: 20,
+    transition: { duration: 0.25, ease: "easeIn" },
+  },
+};

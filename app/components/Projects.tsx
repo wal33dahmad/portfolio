@@ -1,12 +1,13 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import type { Project, ProjectType } from "@/lib/types";
-import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { fadeInUp, staggerContainer, extraItem } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import Card from "./Card";
 import { DeviceShowcase } from "./DeviceFrames";
-import { Globe, LayoutGrid, Smartphone } from "lucide-react";
+import { Code2, ExternalLink, Globe, LayoutGrid, Smartphone } from "lucide-react";
 
 interface ProjectsProps {
   projects: Project[];
@@ -31,6 +32,25 @@ function TypeBadge({ type }: { type: ProjectType }) {
       <Icon size={10} />
       {label}
     </span>
+  );
+}
+
+function ProjectLink({ link, github }: { link?: string; github?: string }) {
+  const href = link ?? github;
+  if (!href) return null;
+  const isGithub = !link && !!github;
+  const Icon = isGithub ? Code2 : ExternalLink;
+  const label = isGithub ? "View on GitHub" : "Visit site";
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="shrink-0 cursor-pointer rounded-full p-1.5 text-muted transition-colors hover:text-foreground"
+    >
+      <Icon size={14} className="cursor-pointer" />
+    </a>
   );
 }
 
@@ -59,9 +79,12 @@ function FeaturedCard({ project }: { project: Project }) {
             </div>
             <div className="absolute bottom-0 left-0 z-20 p-3 sm:p-4">
               <div className="max-w-md rounded-2xl border border-glass-border bg-glass p-5 backdrop-blur-2xl backdrop-saturate-150 sm:p-6">
-                <h3 className="text-lg font-semibold text-foreground sm:text-xl">
-                  {project.title}
-                </h3>
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="text-lg font-semibold text-foreground sm:text-xl">
+                    {project.title}
+                  </h3>
+                  <ProjectLink link={project.link} github={project.github} />
+                </div>
                 <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted">
                   {project.description}
                 </p>
@@ -111,9 +134,10 @@ function BentoCard({
       {fillHeight ? (
         // Natural footer — sits below the phone, no overlap
         <div className="shrink-0 border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
-          <h3 className="text-sm font-semibold text-foreground">
-            {project.title}
-          </h3>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-sm font-semibold text-foreground">{project.title}</h3>
+            <ProjectLink link={project.link} github={project.github} />
+          </div>
           <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
             {project.description}
           </p>
@@ -131,9 +155,10 @@ function BentoCard({
       ) : (
         // Mobile: natural flow below device. Desktop (sm+): absolute overlay.
         <div className="border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:absolute sm:inset-x-0 sm:bottom-0 sm:z-20 sm:p-4">
-          <h3 className="text-sm font-semibold text-foreground">
-            {project.title}
-            </h3>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-sm font-semibold text-foreground">{project.title}</h3>
+            <ProjectLink link={project.link} github={project.github} />
+          </div>
             <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
               {project.description}
             </p>
@@ -154,7 +179,33 @@ function BentoCard({
 }
 
 export default function Projects({ projects }: ProjectsProps) {
+  const [visibleExtraIds, setVisibleExtraIds] = useState<string[]>([]);
+  const timerRefs = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    return () => {
+      timerRefs.current.forEach(clearTimeout);
+    };
+  }, []);
+
   const [featured, ...rest] = projects;
+  const visible = rest.slice(0, 5);
+  const extra = rest.slice(5);
+
+  function handleToggle() {
+    timerRefs.current.forEach(clearTimeout);
+    timerRefs.current = [];
+    if (visibleExtraIds.length === 0) {
+      setVisibleExtraIds(extra.map((p) => p.id));
+    } else {
+      [...extra].reverse().forEach((project, i) => {
+        const t = setTimeout(() => {
+          setVisibleExtraIds((prev) => prev.filter((id) => id !== project.id));
+        }, i * 80);
+        timerRefs.current.push(t);
+      });
+    }
+  }
 
   return (
     <section
@@ -172,36 +223,72 @@ export default function Projects({ projects }: ProjectsProps) {
         whileInView="visible"
         viewport={{ once: true, margin: "-60px" }}
         className="mx-auto flex w-full max-w-5xl flex-col gap-5"
+        layout
       >
         {featured && <FeaturedCard project={featured} />}
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[360px]">
-          {rest[0] && (
+          {visible[0] && (
             <motion.div variants={fadeInUp} className="sm:col-span-2 sm:row-span-2">
-              <BentoCard project={rest[0]} fillHeight={true} />
+              <BentoCard project={visible[0]} fillHeight={true} />
             </motion.div>
           )}
-          {rest[1] && (
+          {visible[1] && (
             <motion.div variants={fadeInUp} className="sm:col-span-4">
-              <BentoCard project={rest[1]} />
+              <BentoCard project={visible[1]} />
             </motion.div>
           )}
-          {rest[2] && (
+          {visible[2] && (
             <motion.div variants={fadeInUp} className="sm:col-span-4">
-              <BentoCard project={rest[2]} />
+              <BentoCard project={visible[2]} />
             </motion.div>
           )}
-          {rest[3] && (
+          {visible[3] && (
             <motion.div variants={fadeInUp} className="sm:col-span-3">
-              <BentoCard project={rest[3]} />
+              <BentoCard project={visible[3]} />
             </motion.div>
           )}
-          {rest[4] && (
+          {visible[4] && (
             <motion.div variants={fadeInUp} className="sm:col-span-3">
-              <BentoCard project={rest[4]} />
+              <BentoCard project={visible[4]} />
             </motion.div>
           )}
         </div>
+
+        {visibleExtraIds.length > 0 && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[360px]">
+            {extra.map((project, i) => (
+              <div key={project.id} className="sm:col-span-3">
+                <AnimatePresence>
+                  {visibleExtraIds.includes(project.id) && (
+                    <motion.div
+                      key={project.id}
+                      className="h-full"
+                      custom={i}
+                      variants={extraItem}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                    >
+                      <BentoCard project={project} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {extra.length > 0 && (
+          <motion.div layout className="flex justify-center">
+            <button
+              onClick={handleToggle}
+              className="liquid-glass-thin rounded-full px-6 py-2.5 text-sm font-medium text-muted transition-colors hover:text-foreground"
+            >
+              {visibleExtraIds.length > 0 ? "Show less" : `Load more (${extra.length})`}
+            </button>
+          </motion.div>
+        )}
       </motion.div>
     </section>
   );
