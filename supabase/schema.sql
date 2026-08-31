@@ -20,6 +20,7 @@ create table projects (
   type text not null check (type in ('web', 'mobile', 'both')),
   highlight text,
   link text,
+  github text,
   screenshots jsonb not null default '[]',
   "order" int not null default 0
 );

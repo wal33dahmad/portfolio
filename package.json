@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "convert-image": "tsx scripts/convert-images.ts"
+    "convert-image": "tsx scripts/convert-images.ts",
+    "seed": "tsx scripts/seed-supabase.ts",
+    "upload-images": "tsx scripts/upload-images.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.100.1",

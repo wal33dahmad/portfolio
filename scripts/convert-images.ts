@@ -4,21 +4,27 @@ import fs from "fs";
 
 const PROFILES = {
   mobile: { width: 560, height: 1248, position: "center" as const },
+  // For screens mounted horizontally — a portrait crop would keep only ~24%
+  // of a landscape source's width.
+  "mobile-landscape": { width: 1248, height: 560, position: "center" as const },
   web: { width: 1000, height: 625, position: "top" as const },
 };
 
-function parseArgs(): { files: string[]; type: "mobile" | "web" } {
+type ProfileName = keyof typeof PROFILES;
+
+function parseArgs(): { files: string[]; type: ProfileName } {
   const args = process.argv.slice(2);
   const typeIndex = args.indexOf("--type");
+  const names = Object.keys(PROFILES) as ProfileName[];
 
   if (typeIndex === -1) {
-    console.error("Usage: tsx scripts/convert-images.ts --file <path> [--file <path> ...] --type <mobile|web>");
+    console.error(`Usage: tsx scripts/convert-images.ts --file <path> [--file <path> ...] --type <${names.join("|")}>`);
     process.exit(1);
   }
 
-  const type = args[typeIndex + 1];
-  if (type !== "mobile" && type !== "web") {
-    console.error(`Error: --type must be "mobile" or "web", got "${type}"`);
+  const type = args[typeIndex + 1] as ProfileName;
+  if (!names.includes(type)) {
+    console.error(`Error: --type must be one of ${names.join(", ")}, got "${type}"`);
     process.exit(1);
   }
 
@@ -38,7 +44,7 @@ function parseArgs(): { files: string[]; type: "mobile" | "web" } {
   return { files, type };
 }
 
-async function convertImage(file: string, type: "mobile" | "web") {
+async function convertImage(file: string, type: ProfileName) {
   const inputPath = path.isAbsolute(file)
     ? file
     : path.resolve("public/images/projects", file);
