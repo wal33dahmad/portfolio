@@ -9,6 +9,7 @@
   --color-glass: var(--glass);
   --color-glass-border: var(--glass-border);
   --color-glass-hover: var(--glass-hover);
+  --color-glass-panel: var(--glass-panel);
   --color-accent: var(--accent);
   --color-accent-mobile: var(--accent-mobile);
   --color-muted: var(--muted);
@@ -24,6 +25,10 @@
   --glass: rgba(255, 255, 255, 0.55);
   --glass-border: rgba(255, 255, 255, 0.45);
   --glass-hover: rgba(255, 255, 255, 0.7);
+  /* Surfaces that sit ON a screenshot. --glass borrows the image's luminance,
+     which is fine over the page but leaves text at ~1:1 over a light shot.
+     This stays anchored to the theme so contrast holds over any image. */
+  --glass-panel: rgba(245, 245, 247, 0.92);
   --accent: #0071e3;
   --accent-mobile: #7c3aed;
   --muted: #515154;
@@ -40,6 +45,7 @@
   --glass: rgba(255, 255, 255, 0.06);
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-hover: rgba(255, 255, 255, 0.1);
+  --glass-panel: rgba(20, 20, 22, 0.92);
   --accent: #2997ff;
   --accent-mobile: #a78bfa;
   --muted: #a1a1a6;

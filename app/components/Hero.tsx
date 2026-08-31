@@ -5,8 +5,9 @@ import { useRef, useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import type { PersonalInfo } from "@/lib/types";
 import { heroTitle, heroSubtitle } from "@/lib/animations";
+import { HERO_TECH, PROOF_POINTS } from "@/lib/brand";
 import Button from "./Button";
-import { ArrowDown, Globe, Smartphone } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import Aurora from "./Aurora";
 
 interface HeroProps {
@@ -91,17 +92,37 @@ export default function Hero({ personalInfo }: HeroProps) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-6 flex flex-wrap items-center justify-center gap-3"
+          className="mt-6 flex flex-wrap items-center justify-center gap-2"
         >
-          <span className="liquid-glass-thin inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium text-accent">
-            <Globe size={14} />
-            Web
-          </span>
-          <span className="liquid-glass-thin inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium text-accent-mobile">
-            <Smartphone size={14} />
-            Mobile
-          </span>
+          {HERO_TECH.map((tech) => (
+            <span
+              key={tech}
+              className={`liquid-glass-thin rounded-full px-3.5 py-1.5 text-xs font-medium ${
+                tech === "AI/LLMs" ? "text-accent-mobile" : "text-accent"
+              }`}
+            >
+              {tech}
+            </span>
+          ))}
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-medium tracking-wide text-muted sm:text-sm"
+        >
+          {PROOF_POINTS.map((point, i) => (
+            <span key={point} className="flex items-center gap-x-3">
+              {i > 0 && (
+                <span aria-hidden className="text-foreground/25">
+                  ·
+                </span>
+              )}
+              {point}
+            </span>
+          ))}
+        </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

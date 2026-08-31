@@ -15,10 +15,15 @@ export function HeroSkeleton() {
         <Pulse className="h-4 w-28" />
         <Pulse className="h-14 w-3/4" />
         <Pulse className="h-5 w-2/4" />
-        <div className="flex gap-3">
+        <div className="flex flex-wrap justify-center gap-2">
+          <Pulse className="h-7 w-16 rounded-full" />
+          <Pulse className="h-7 w-20 rounded-full" />
+          <Pulse className="h-7 w-28 rounded-full" />
+          <Pulse className="h-7 w-20 rounded-full" />
           <Pulse className="h-7 w-24 rounded-full" />
-          <Pulse className="h-7 w-24 rounded-full" />
+          <Pulse className="h-7 w-20 rounded-full" />
         </div>
+        <Pulse className="h-4 w-64" />
         <div className="mt-2 flex gap-3">
           <Pulse className="h-10 w-32 rounded-full" />
           <Pulse className="h-10 w-32 rounded-full" />
@@ -54,16 +59,24 @@ export function ProjectsSkeleton() {
           <Pulse className="h-5 w-40" />
           <Pulse className="h-3.5 w-64" />
         </div>
-        {/* Featured wide card */}
-        <Pulse className="h-[420px] rounded-3xl" />
-        {/* Bento grid */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[360px]">
-          <Pulse className="sm:col-span-2 sm:row-span-2" />
-          <Pulse className="sm:col-span-4" />
-          <Pulse className="sm:col-span-4" />
-          <Pulse className="sm:col-span-3" />
-          <Pulse className="sm:col-span-3" />
+        {/* Lead hero — a full-width browser shot */}
+        <Pulse className="h-[340px] rounded-3xl sm:h-[640px]" />
+        {/* Featured block — narrow full-height sidebar plus two 2/3 cards.
+            h-[460px] is load-bearing: auto-rows is sm:-only, so without it the
+            whole grid collapses to 0px on mobile. */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[460px]">
+          <Pulse className="h-[460px] sm:h-auto sm:col-span-2 sm:row-span-2" />
+          <Pulse className="h-[400px] sm:h-auto sm:col-span-4" />
+          <Pulse className="h-[400px] sm:h-auto sm:col-span-4" />
         </div>
+        {/* Trailing hero */}
+        <Pulse className="h-[340px] rounded-3xl sm:h-[640px]" />
+        {/* More Projects — collapsed until toggled, so just heading + button */}
+        <div className="mt-12 flex items-center gap-4">
+          <Pulse className="h-3 w-28" />
+          <Pulse className="h-px flex-1" />
+        </div>
+        <Pulse className="mx-auto h-10 w-40 rounded-full" />
       </div>
     </section>
   );

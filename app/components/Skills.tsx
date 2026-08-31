@@ -4,12 +4,19 @@ import { motion } from "motion/react";
 import type { SkillDomain } from "@/lib/types";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
-import { Globe, Smartphone } from "lucide-react";
+import { Globe, Smartphone, Server, Radio, Sparkles } from "lucide-react";
 
 const domainIcons: Record<string, React.ElementType> = {
   Globe,
   Smartphone,
+  Server,
+  Radio,
+  Sparkles,
 };
+
+/* Two accent tokens across five domains, rather than inventing new ones:
+   the client-facing pair (mobile, AI) takes the violet. */
+const violetDomains = new Set(["mobile", "ai-llm"]);
 
 interface SkillsProps {
   skillDomains: SkillDomain[];
@@ -23,7 +30,7 @@ export default function Skills({ skillDomains }: SkillsProps) {
     >
       <SectionTitle
         title="What I Work With"
-        subtitle="Web and mobile — the tools and technologies I use to ship products."
+        subtitle="From interface to infrastructure — the tools I use to ship products end to end."
       />
 
       <motion.div
@@ -31,13 +38,13 @@ export default function Skills({ skillDomains }: SkillsProps) {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-60px" }}
-        className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 md:grid-cols-2"
+        className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
       >
         {skillDomains.map((domain) => {
           const Icon = domainIcons[domain.icon] ?? Globe;
-          const isMobile = domain.id === "mobile";
-          const accentVar = isMobile ? "var(--accent-mobile)" : "var(--accent)";
-          const chipClass = isMobile
+          const isViolet = violetDomains.has(domain.id);
+          const accentVar = isViolet ? "var(--accent-mobile)" : "var(--accent)";
+          const chipClass = isViolet
             ? "liquid-glass-thin rounded-full px-3 py-1.5 text-xs font-medium text-accent-mobile transition-all duration-300 hover:shadow-[0_0_24px_rgba(124,58,237,0.12)]"
             : "liquid-glass-thin rounded-full px-3 py-1.5 text-xs font-medium text-accent transition-all duration-300 hover:shadow-[0_0_24px_rgba(0,113,227,0.12)]";
 
@@ -50,7 +57,7 @@ export default function Skills({ skillDomains }: SkillsProps) {
               <div
                 className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 style={{
-                  background: isMobile
+                  background: isViolet
                     ? "radial-gradient(ellipse at 30% 0%, rgba(124, 58, 237, 0.06), transparent 60%)"
                     : "radial-gradient(ellipse at 30% 0%, rgba(0, 113, 227, 0.06), transparent 60%)",
                 }}
@@ -59,7 +66,7 @@ export default function Skills({ skillDomains }: SkillsProps) {
                 <div
                   className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl"
                   style={{
-                    background: isMobile
+                    background: isViolet
                       ? "rgba(124, 58, 237, 0.12)"
                       : "rgba(0, 113, 227, 0.12)",
                     color: accentVar,

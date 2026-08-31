@@ -61,9 +61,11 @@ export default function Contact({ personalInfo }: ContactProps) {
         <GlassContainer className="p-8 sm:p-10">
           <p className="mb-8 text-center text-sm leading-relaxed text-muted sm:text-base">
             I build web platforms and mobile apps that people actually use — from Telegram apps with{" "}
-            <span className="font-medium text-accent">150K+ users</span> to IoT dashboards and published{" "}
-            <span className="font-medium text-accent-mobile">App Store products</span>. I&apos;ve spent{" "}
-            <span className="font-medium text-foreground">4+ years</span> working remotely with teams across{" "}
+            <span className="font-medium text-accent">150K+ users</span> to fleet dashboards tracking{" "}
+            <span className="font-medium text-accent">50K+ fleets</span> and published{" "}
+            <span className="font-medium text-accent-mobile">App Store products</span>. Lately that includes{" "}
+            <span className="font-medium text-accent-mobile">LLM-powered features</span> — another tool in the kit, not a pivot. I&apos;ve spent{" "}
+            <span className="font-medium text-foreground">5+ years</span> working remotely with teams across{" "}
             <span className="font-medium text-foreground">France, Turkey, Saudi Arabia and Pakistan</span>, and I&apos;m happiest when I&apos;m shipping something real. If you have an idea, a product, or a problem — let&apos;s talk.
           </p>
 

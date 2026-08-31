@@ -115,13 +115,21 @@ export const slideInRight: Variants = {
   },
 };
 
+/* Archive grid: a pure orchestrator, so AnimatePresence waits on the whole
+   cascade in both directions instead of unmounting mid-exit. */
+export const extraGrid: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+  exit: { transition: { staggerChildren: 0.04, staggerDirection: -1 } },
+};
+
 export const extraItem: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
+  visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.35, ease: "easeOut", delay: i * 0.1 },
-  }),
+    transition: { duration: 0.35, ease: "easeOut" },
+  },
   exit: {
     opacity: 0,
     y: 20,

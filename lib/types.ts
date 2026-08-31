@@ -23,7 +23,7 @@ export interface SkillDomain {
   order: number;
 }
 
-export type DeviceType = "iphone" | "pixel" | "browser";
+export type DeviceType = "iphone" | "iphone-landscape" | "pixel" | "browser";
 
 export interface ProjectScreenshot {
   src: string;

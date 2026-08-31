@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { Project, ProjectType } from "@/lib/types";
-import { fadeInUp, staggerContainer, extraItem } from "@/lib/animations";
+import { fadeInUp, staggerContainer, extraGrid, extraItem } from "@/lib/animations";
 import SectionTitle from "./SectionTitle";
 import Card from "./Card";
 import { DeviceShowcase } from "./DeviceFrames";
@@ -13,20 +13,28 @@ interface ProjectsProps {
   projects: Project[];
 }
 
+const TYPE_META = {
+  web: { Icon: Globe, label: "Web" },
+  mobile: { Icon: Smartphone, label: "Mobile" },
+  both: { Icon: LayoutGrid, label: "Web + Mobile" },
+} as const;
+
+/** Featured Work — the rest of the list falls through to "More Projects". */
+const FEATURED_COUNT = 5;
+
 function TypeBadge({ type }: { type: ProjectType }) {
+  const { Icon, label } = TYPE_META[type];
   const isMobile = type === "mobile";
   const isBoth = type === "both";
-  const Icon = isBoth ? LayoutGrid : isMobile ? Smartphone : Globe;
-  const label = isBoth ? "Web + Mobile" : isMobile ? "Mobile" : "Web";
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider backdrop-blur-sm ${
+      className={`inline-flex items-center gap-1 rounded-full bg-glass-panel px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider backdrop-blur-sm ${
         isMobile
-          ? "bg-accent-mobile/15 text-accent-mobile"
+          ? "text-accent-mobile"
           : isBoth
-            ? "bg-foreground/10 text-foreground"
-            : "bg-accent/15 text-accent"
+            ? "text-foreground"
+            : "text-accent"
       }`}
     >
       <Icon size={10} />
@@ -54,8 +62,76 @@ function ProjectLink({ link, github }: { link?: string; github?: string }) {
   );
 }
 
+/* Screenshots pending — an accent wash behind a faded device glyph, so the
+   card keeps its shape and reads as deliberate rather than broken. */
+function NoShotsCanvas({
+  type,
+  className = "",
+}: {
+  type: ProjectType;
+  className?: string;
+}) {
+  const { Icon } = TYPE_META[type];
+  const isMobile = type === "mobile";
+  return (
+    <div
+      className={`relative flex items-center justify-center overflow-hidden ${className}`}
+    >
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: isMobile
+            ? "radial-gradient(ellipse 60% 60% at 50% 45%, rgba(124,58,237,0.10), transparent)"
+            : "radial-gradient(ellipse 60% 60% at 50% 45%, rgba(0,113,227,0.10), transparent)",
+        }}
+        aria-hidden
+      />
+      <Icon
+        size={56}
+        strokeWidth={1}
+        className={`relative ${isMobile ? "text-accent-mobile/25" : "text-accent/25"}`}
+        aria-hidden
+      />
+    </div>
+  );
+}
+
+/* ─── Featured layout ──────────────────────────────────────────── */
+
+/** The tall column is only ~330px wide, so it holds exactly one portrait
+    phone — a three-phone fan or a browser + phone pair needs a wide slot.
+    That constraint, not editorial preference, picks the sidebar card. */
+function fitsNarrowColumn(project: Project): boolean {
+  const shots = project.screenshots ?? [];
+  return (
+    shots.length === 1 &&
+    shots[0].device !== "browser" &&
+    shots[0].device !== "iphone-landscape"
+  );
+}
+
+/** Featured tier: a lead hero, then a three-card block — one narrow
+    full-height sidebar plus two 2/3-width cards stacked beside it — then any
+    remaining featured projects as full-width cards. Filled positionally from
+    `order`, so the DB still decides which project lands in which slot. */
+function featuredLayout(featured: Project[]) {
+  const [lead, ...rest] = featured;
+  const sidebar = rest.find(fitsNarrowColumn);
+  const remaining = rest.filter((p) => p !== sidebar);
+  return {
+    lead,
+    sidebar,
+    block: remaining.slice(0, 2),
+    trailing: remaining.slice(2),
+  };
+}
+
+/* ─── Cards ────────────────────────────────────────────────────── */
+
 function FeaturedCard({ project }: { project: Project }) {
   const isMobile = project.type === "mobile";
+  const shots = project.screenshots ?? [];
+
   return (
     <motion.div variants={fadeInUp}>
       <Card className="rounded-3xl">
@@ -63,45 +139,47 @@ function FeaturedCard({ project }: { project: Project }) {
           className={`h-[2px] shrink-0 rounded-t-3xl ${isMobile ? "bg-accent-mobile" : "bg-accent"}`}
           aria-hidden
         />
-        {project.screenshots && project.screenshots.length > 0 && (
-          <div className="relative overflow-hidden">
-            <DeviceShowcase
-              screenshots={project.screenshots}
-              variant="wide"
-            />
-            <div className="absolute top-3 left-3 z-20 flex items-center gap-2 sm:top-4 sm:left-4">
-              <TypeBadge type={project.type} />
-              {project.highlight && (
-                <span className="liquid-glass-thin rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-foreground">
-                  {project.highlight}
-                </span>
-              )}
+        <div className="relative overflow-hidden">
+          {shots.length > 0 ? (
+            <DeviceShowcase screenshots={shots} variant="wide" />
+          ) : (
+            <NoShotsCanvas type={project.type} className="h-48 sm:h-72" />
+          )}
+          <div className="absolute top-3 left-3 z-20 flex items-center gap-2 sm:top-4 sm:left-4">
+            <TypeBadge type={project.type} />
+            {project.highlight && (
+              <span className="rounded-full border border-glass-border bg-glass-panel px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-foreground backdrop-blur-sm">
+                {project.highlight}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile: flows below the shot — a phone-width hero is too short to
+            sit under an overlay. Desktop (sm+): glass panel on its lower edge. */}
+        <div className="p-3 sm:absolute sm:bottom-0 sm:left-0 sm:z-20 sm:p-4">
+          <div className="max-w-md rounded-2xl border border-glass-border bg-glass-panel p-5 backdrop-blur-2xl backdrop-saturate-150 sm:p-6">
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-lg font-semibold text-foreground sm:text-xl">
+                {project.title}
+              </h3>
+              <ProjectLink link={project.link} github={project.github} />
             </div>
-            <div className="absolute bottom-0 left-0 z-20 p-3 sm:p-4">
-              <div className="max-w-md rounded-2xl border border-glass-border bg-glass p-5 backdrop-blur-2xl backdrop-saturate-150 sm:p-6">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-lg font-semibold text-foreground sm:text-xl">
-                    {project.title}
-                  </h3>
-                  <ProjectLink link={project.link} github={project.github} />
-                </div>
-                <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted">
-                  {project.description}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className={`liquid-glass-thin rounded-full px-2.5 py-0.5 text-[10px] font-medium sm:text-xs ${isMobile ? "text-accent-mobile" : "text-accent"}`}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted">
+              {project.description}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className={`liquid-glass-thin rounded-full px-2.5 py-0.5 text-[10px] font-medium sm:text-xs ${isMobile ? "text-accent-mobile" : "text-accent"}`}
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
-        )}
+        </div>
       </Card>
     </motion.div>
   );
@@ -110,102 +188,79 @@ function FeaturedCard({ project }: { project: Project }) {
 function BentoCard({
   project,
   fillHeight = false,
+  wide = false,
 }: {
   project: Project;
   fillHeight?: boolean;
+  /** A 2/3-width slot is roomy enough for the wide compositions. */
+  wide?: boolean;
 }) {
   const isMobile = project.type === "mobile";
+  const shots = project.screenshots ?? [];
+
+  const footer = (
+    <>
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-sm font-semibold text-foreground">{project.title}</h3>
+        <ProjectLink link={project.link} github={project.github} />
+      </div>
+      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
+        {project.description}
+      </p>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {project.tags.map((tag) => (
+          <span
+            key={tag}
+            className={`liquid-glass-thin rounded-full px-2 py-0.5 text-[10px] font-medium ${isMobile ? "text-accent-mobile" : "text-accent"}`}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </>
+  );
 
   return (
     <Card className="flex h-full flex-col overflow-hidden">
-      {project.screenshots && project.screenshots.length > 0 && (
-        <div className="relative flex flex-col overflow-hidden pt-8 sm:min-h-0 sm:flex-1 sm:pt-0">
+      <div className="relative flex flex-col overflow-hidden pt-8 sm:min-h-0 sm:flex-1 sm:pt-0">
+        {shots.length > 0 ? (
           <DeviceShowcase
-            screenshots={project.screenshots}
-            variant="standard"
+            screenshots={shots}
+            variant={wide ? "wide" : "standard"}
+            compact={wide}
             fillHeight={fillHeight}
           />
-          <div className="absolute top-2 left-2 z-10">
-            <TypeBadge type={project.type} />
-          </div>
+        ) : (
+          <NoShotsCanvas type={project.type} className="min-h-40 flex-1" />
+        )}
+        <div className="absolute top-2 left-2 z-10">
+          <TypeBadge type={project.type} />
         </div>
-      )}
+      </div>
 
       {fillHeight ? (
         // Natural footer — sits below the phone, no overlap
-        <div className="shrink-0 border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-foreground">{project.title}</h3>
-            <ProjectLink link={project.link} github={project.github} />
-          </div>
-          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
-            {project.description}
-          </p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className={`liquid-glass-thin rounded-full px-2 py-0.5 text-[10px] font-medium ${isMobile ? "text-accent-mobile" : "text-accent"}`}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+        <div className="shrink-0 border-t border-glass-border bg-glass-panel p-3 backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
+          {footer}
         </div>
       ) : (
         // Mobile: natural flow below device. Desktop (sm+): absolute overlay.
-        <div className="border-t border-glass-border bg-glass p-3 backdrop-blur-2xl backdrop-saturate-150 sm:absolute sm:inset-x-0 sm:bottom-0 sm:z-20 sm:p-4">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-foreground">{project.title}</h3>
-            <ProjectLink link={project.link} github={project.github} />
-          </div>
-            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">
-              {project.description}
-            </p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className={`liquid-glass-thin rounded-full px-2 py-0.5 text-[10px] font-medium ${isMobile ? "text-accent-mobile" : "text-accent"}`}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
+        <div className="border-t border-glass-border bg-glass-panel p-3 backdrop-blur-2xl backdrop-saturate-150 sm:absolute sm:inset-x-0 sm:bottom-0 sm:z-20 sm:p-4">
+          {footer}
+        </div>
       )}
     </Card>
   );
 }
 
+/* ─── Section ──────────────────────────────────────────────────── */
+
 export default function Projects({ projects }: ProjectsProps) {
-  const [visibleExtraIds, setVisibleExtraIds] = useState<string[]>([]);
-  const timerRefs = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    return () => {
-      timerRefs.current.forEach(clearTimeout);
-    };
-  }, []);
-
-  const [featured, ...rest] = projects;
-  const visible = rest.slice(0, 5);
-  const extra = rest.slice(5);
-
-  function handleToggle() {
-    timerRefs.current.forEach(clearTimeout);
-    timerRefs.current = [];
-    if (visibleExtraIds.length === 0) {
-      setVisibleExtraIds(extra.map((p) => p.id));
-    } else {
-      [...extra].reverse().forEach((project, i) => {
-        const t = setTimeout(() => {
-          setVisibleExtraIds((prev) => prev.filter((id) => id !== project.id));
-        }, i * 80);
-        timerRefs.current.push(t);
-      });
-    }
-  }
+  const featured = projects.slice(0, FEATURED_COUNT);
+  const more = projects.slice(FEATURED_COUNT);
+  const { lead, sidebar, block, trailing } = featuredLayout(featured);
 
   return (
     <section
@@ -213,7 +268,7 @@ export default function Projects({ projects }: ProjectsProps) {
       className="relative flex flex-col items-center justify-center px-6 py-20"
     >
       <SectionTitle
-        title="Things I've Built"
+        title="Featured Work"
         subtitle="Web apps, mobile apps, and full-stack products — from idea to launch."
       />
 
@@ -223,73 +278,87 @@ export default function Projects({ projects }: ProjectsProps) {
         whileInView="visible"
         viewport={{ once: true, margin: "-60px" }}
         className="mx-auto flex w-full max-w-5xl flex-col gap-5"
-        layout
       >
-        {featured && <FeaturedCard project={featured} />}
+        {lead && <FeaturedCard project={lead} />}
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[360px]">
-          {visible[0] && (
-            <motion.div variants={fadeInUp} className="sm:col-span-2 sm:row-span-2">
-              <BentoCard project={visible[0]} fillHeight={true} />
-            </motion.div>
-          )}
-          {visible[1] && (
-            <motion.div variants={fadeInUp} className="sm:col-span-4">
-              <BentoCard project={visible[1]} />
-            </motion.div>
-          )}
-          {visible[2] && (
-            <motion.div variants={fadeInUp} className="sm:col-span-4">
-              <BentoCard project={visible[2]} />
-            </motion.div>
-          )}
-          {visible[3] && (
-            <motion.div variants={fadeInUp} className="sm:col-span-3">
-              <BentoCard project={visible[3]} />
-            </motion.div>
-          )}
-          {visible[4] && (
-            <motion.div variants={fadeInUp} className="sm:col-span-3">
-              <BentoCard project={visible[4]} />
-            </motion.div>
-          )}
-        </div>
-
-        {visibleExtraIds.length > 0 && (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[360px]">
-            {extra.map((project, i) => (
-              <div key={project.id} className="sm:col-span-3">
-                <AnimatePresence>
-                  {visibleExtraIds.includes(project.id) && (
-                    <motion.div
-                      key={project.id}
-                      className="h-full"
-                      custom={i}
-                      variants={extraItem}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                    >
-                      <BentoCard project={project} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+        {(sidebar || block.length > 0) && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[460px]">
+            {sidebar && (
+              <motion.div
+                variants={fadeInUp}
+                className="sm:col-span-2 sm:row-span-2"
+              >
+                <BentoCard project={sidebar} fillHeight />
+              </motion.div>
+            )}
+            {block.map((project) => (
+              <motion.div
+                key={project.id}
+                variants={fadeInUp}
+                className="sm:col-span-4"
+              >
+                <BentoCard project={project} wide />
+              </motion.div>
             ))}
           </div>
         )}
 
-        {extra.length > 0 && (
-          <motion.div layout className="flex justify-center">
+        {trailing.map((project) => (
+          <FeaturedCard key={project.id} project={project} />
+        ))}
+      </motion.div>
+
+      {more.length > 0 && (
+        /* Its own viewport trigger — sharing the section's stagger clock would
+           have the last card finish animating far below the fold. */
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          className="mx-auto mt-12 flex w-full max-w-5xl flex-col gap-5"
+        >
+          <motion.div variants={fadeInUp} className="flex items-center gap-4">
+            <h3 className="text-xs font-medium uppercase tracking-wider text-muted">
+              More Projects
+            </h3>
+            <span className="h-px flex-1 bg-glass-border" aria-hidden />
+          </motion.div>
+
+          <AnimatePresence initial={false}>
+            {expanded && (
+              <motion.div
+                key="more-grid"
+                variants={extraGrid}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="grid grid-cols-1 gap-5 sm:grid-cols-6 sm:auto-rows-[360px]"
+              >
+                {more.map((project) => (
+                  <motion.div
+                    key={project.id}
+                    variants={extraItem}
+                    className="sm:col-span-3"
+                  >
+                    <BentoCard project={project} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <motion.div variants={fadeInUp} className="flex justify-center">
             <button
-              onClick={handleToggle}
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
               className="liquid-glass-thin rounded-full px-6 py-2.5 text-sm font-medium text-muted transition-colors hover:text-foreground"
             >
-              {visibleExtraIds.length > 0 ? "Show less" : `Load more (${extra.length})`}
+              {expanded ? "Show less" : `Show more (${more.length})`}
             </button>
           </motion.div>
-        )}
-      </motion.div>
+        </motion.div>
+      )}
     </section>
   );
 }
